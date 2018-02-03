@@ -1,0 +1,115 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="my-login_register">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+
+        padding: 10px;
+		
+		
+      }
+	  
+	  .heading {
+		display: inline-block;
+        width: 120px;
+        height: 64px;
+        text-align: center;
+        color: #555;
+        border-radius: 10%;
+        background: #ddd;
+        font-size: 20px;
+        line-height: 64px;
+		margin-left: 35% !important;
+	  }
+	  
+	  .lr {
+		
+		width: 43%;
+		margin: 24px;
+		margin-top: 40px;
+        padding: 16px;
+        color: #757575;
+        border-radius: 5px;
+        background-color: #fff;
+        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+		float: left;
+	  }
+	  
+	  #submitButton {
+		width: 90px;
+		height: 40px;
+		background-color: green;
+		border-radius: 5px;
+		padding: 8px;
+		color: #fff;
+		opacity: 0.8;
+	  }
+	  
+	   #submitButton:hover {
+		opacity: 1;
+		cursor: pointer;
+	  }
+	  
+	  
+	  
+	  
+    </style>
+
+    <div class="lr">
+      <div class="heading">Login</div>
+
+	<iron-form>
+	
+		<form action="" method="POST">
+			<paper-input always-float-label label="Username" type="text"></paper-input>
+			<paper-input always-float-label label="Password" type="password"></paper-input>
+			<input type="submit" value="Login" id="submitButton"/>
+		</form>
+	
+	
+	</iron-form>
+	  
+    </div>
+	<div class="lr">
+      <div class="heading">Register</div>
+      
+	  <iron-form>
+	
+		<form action="http://localhost/polymer_backend/web/app_dev.php/form/data" method="POST">
+			<paper-input always-float-label label="Firstname" name="firstname" ></paper-input>
+			<paper-input always-float-label label="Lastname"  name="lastname" ></paper-input>
+			<paper-input always-float-label label="Username" name="username" ></paper-input>
+			<paper-input always-float-label label="Password" name="password" ></paper-input>  <!-- kad stavim type vraca mi 500 error -->
+			
+			<input type="submit" value="Register" id="submitButton"/>
+		</form>
+	
+	
+	</iron-form>
+      
+    </div>
+  </template>
+
+  <script>
+    class MyLoginRegister extends Polymer.Element {
+      static get is() { return 'my-login_register'; }
+    }
+
+    window.customElements.define(MyLoginRegister.is, MyLoginRegister);
+  </script>
+</dom-module>

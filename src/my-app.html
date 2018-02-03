@@ -1,0 +1,225 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="my-icons.html">
+
+<link rel="lazy-import" href="my-login_register.html">
+<link rel="lazy-import" href="my-home.html">
+<link rel="lazy-import" href="my-gallery.html">
+<link rel="lazy-import" href="my-about.html">
+<link rel="lazy-import" href="my-contact.html">
+<link rel="lazy-import" href="my-view404.html">
+
+<dom-module id="my-app">
+  <template>
+    <style>
+      :host {
+        --app-primary-color: #4285f4;
+        --app-secondary-color: black;
+
+        display: block;
+      }
+
+      app-drawer-layout:not([narrow]) [drawer-toggle] {
+        display: none;
+      }
+
+	  /* Za header preko cijelog ekrana*/
+      app-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+	  height: 60px;
+      background-color: green;
+      color: #fff;
+	 
+    }
+	
+	app-header-layout {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: #ccc;
+      color: #fff;
+	
+    }
+	
+	#app-title {
+		text-indent: 20px;
+	}
+
+
+      app-header paper-icon-button {
+        --paper-icon-button-ink-color: white;
+      }
+
+      .drawer-list {
+        margin: 0 20px;
+		
+      }
+
+      .drawer-list a {
+        display: block;
+        padding: 0 16px;
+        text-decoration: none;
+        color: #fff;
+        line-height: 40px;
+		text-indent: 20px;
+		font-size: 20px;
+      }
+	  
+	  .drawer-list a:hover {
+		background-color: green;
+	  }
+
+      .drawer-list a.iron-selected {
+        color: #fff;
+        font-weight: bold;
+		text-decoration: underline;
+      }
+	  
+	 
+	  
+    </style>
+
+    <app-location
+        route="{{route}}"
+        url-space-regex="^[[rootPath]]">
+    </app-location>
+
+    <app-route
+        route="{{route}}"
+        pattern="[[rootPath]]:page"
+        data="{{routeData}}"
+        tail="{{subroute}}">
+    </app-route>
+
+    <app-drawer-layout fullbleed force-narrow>
+      <!-- Drawer content -->
+      <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]" opened=false>
+        
+        <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+		<a name="home" href="[[rootPath]]home"><iron-icon icon="home"></iron-icon>  Home</a>
+		<a name="login_register" href="[[rootPath]]login_register"><iron-icon icon="account-circle"></iron-icon>  Login/Register</a>
+          <a name="gallery" href="[[rootPath]]gallery" on-click="toggleDrawer"><iron-icon icon="perm-media"></iron-icon>  Gallery</a>
+          <a name="about" href="[[rootPath]]about" on-click="toggleDrawer"><iron-icon icon="face"></iron-icon>  About Us</a>
+          <a name="contact" href="[[rootPath]]contact" on-click="toggleDrawer"><iron-icon icon="settings-phone"></iron-icon>  Contact Us</a>
+		 
+        </iron-selector>
+      </app-drawer>
+
+      <!-- Main content -->
+      <app-header-layout has-scrolling-region>
+
+        <app-header slot="header" condenses reveals effects="waterfall">
+          <app-toolbar>
+			<paper-icon-button icon="icons:menu" on-click="toggleDrawer"></paper-icon-button>
+         
+            <div main-title id="app-title">My App</div>
+          </app-toolbar>
+        </app-header>
+
+        <iron-pages
+            selected="[[page]]"
+            attr-for-selected="name"
+            fallback-selection="view404"
+            role="main">
+		  <my-login_register name="login_register"></my-login_register>	
+          <my-gallery name="gallery"></my-gallery>
+          <my-about name="about"></my-about>
+          <my-contact name="contact"></my-contact>
+		  <my-home name="home"></my-home>
+          <my-view404 name="view404"></my-view404>
+        </iron-pages>
+      </app-header-layout>
+    </app-drawer-layout>
+  </template>
+
+  <script>
+    class MyApp extends Polymer.Element {
+      static get is() { return 'my-app'; }
+		
+		
+		
+		
+      static get properties() {
+        return {
+          page: {
+            type: String,
+            reflectToAttribute: true,
+            observer: '_pageChanged',
+          },
+          routeData: Object,
+          subroute: String,
+          // This shouldn't be neccessary, but the Analyzer isn't picking up
+          // Polymer.Element#rootPath
+          rootPath: String,
+        };
+      }
+
+      static get observers() {
+        return [
+          '_routePageChanged(routeData.page)',
+        ];
+      }
+
+      _routePageChanged(page) {
+        // If no page was found in the route data, page will be an empty string.
+        // Default to 'view1' in that case.
+        this.page = page || 'view1';
+
+        // Close a non-persistent drawer when the page & route are changed.
+        if (!this.$.drawer.persistent) {
+          this.$.drawer.close();
+        }
+      }
+
+      _pageChanged(page) {
+        // Load page import on demand. Show 404 page if fails
+        var resolvedPageUrl = this.resolveUrl('my-' + page + '.html');
+        Polymer.importHref(
+            resolvedPageUrl,
+            null,
+            this._showPage404.bind(this),
+            true);
+      }
+	  
+	  
+	 
+	  
+	  
+	  toggleDrawer() {
+		this.$.drawer.toggle();
+	  }
+
+      _showPage404() {
+        this.page = 'view404';
+      }
+    }
+
+    window.customElements.define(MyApp.is, MyApp);
+  </script>
+</dom-module>
